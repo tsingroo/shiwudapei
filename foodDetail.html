@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>食物详细</title>
+	<link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+	<style>
+		table{color: #755a0b;max-height: 160px;line-height: 20px;margin: 0 0 20px 258px;padding: 0 0 20px;overflow: hidden;}
+	</style>
+</head>
+
+<body>
+	<div id="background">
+		<div id="page">
+			<div id="header">
+				<span id="connect">
+					<a href="http://www.facebook.com/tsingroo" target="_blank" class="facebook"></a>
+					<a href="https://twitter.com/tsingroo" target="_blank" class="twitter"></a>
+					<a href="https://plus.google.com/110893886634852173169" target="_blank" class="gplus"></a>
+				</span>
+				<a href="index.html" id="logo"></a> <!-- /#logo -->
+				<ul id="navigation">
+					<li><a href="index.html">首页</a></li>
+					<li><a href="foodList.html">食物</a></li>
+					<li><a href="combin.html">相克相宜</a></li>
+					<li><a href="phoneClient.html">手机客户端</a></li>
+					<li><a  href="aboutme.html">关于我</a></li>
+				</ul>
+			</div> <!-- /#header -->
+			<div id="contents">
+				<div id="blogs" ng-controller="foodModel">
+					<div class="last">
+						<span><img src="{{food.ImgFile||'images/noImage.jpg'}}" alt="shirt" /></span>
+						<h3>{{food.FoodName}}</h3>
+						<p><b>别名：</b>{{food.OtherName||'-'}}</p>
+						<p><b>描述：</b>{{food.Description||'-'}}</p>	
+						<table>
+							<tr><th>相克食物</th><th>名称</th><th>描述</th></tr>
+							<tr ng-repeat="bad in bads"><td><img src="images/sad.png" /></td><td>{{bad.FoodName||'-'}}</td><td>{{bad.Reason||'-'}}</td></tr>
+						</table><br/>
+						<table>
+							<tr><th>相宜食物</th><th>名称</th><th>描述</th></tr>
+							<tr ng-repeat="good in goods"><td><img src="images/smile.png" /></td><td>{{good.FoodName||'-'}}</td><td>{{good.Reason||'-'}}</td></tr>
+						</table>
+						<p><b>营养元素：</b></p>
+					</div>
+					
+				</div>
+			</div> <!-- /#contents -->
+			<div id="footer">
+				<div class="navigation">
+					
+				</div>
+			</div> <!-- /#footer -->
+		</div> <!-- /#page -->
+	</div> <!-- /#background -->
+	<script src="js/angular.min.js"></script>
+	<script>
+		function getQueryStringByName(name) {
+				var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+				if (result == null || result.length < 1) {
+						return "";
+				}
+				return result[1];
+		}
+		
+		var foodID = getQueryStringByName("id");
+		function foodModel($scope, $http) {
+			$http.get('api/food.php?id=' + foodID).success(function(data) {
+				$scope.food = data[0];
+			});
+			$http.get('api/bCombin.php?id=' + foodID).success(function(data) {
+				$scope.bads = data;
+			});
+			$http.get('api/gCombin.php?id=' + foodID).success(function(data) {
+				$scope.goods = data;
+			});
+		}
+	</script>
+</body>
+</html>
