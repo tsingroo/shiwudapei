@@ -1,6 +1,4 @@
 <?php
-//************NOTE***********
-//SAE 平台直接写死，构造函数无用。
 class DBAccess {
 	protected $DBInstance;
 	//构造函数
@@ -30,7 +28,6 @@ class DBAccess {
 	//新增一条数据
 	//columns为列数组，key字段为列名，value字段为列值
 	function Add($tbname, $columns) {
-		assert("count($columns) > 0");//前置条件检查
 		$keys = " (";
 		$values = " (";
 		foreach ($columns as $key => $value) { 
@@ -49,16 +46,15 @@ class DBAccess {
 		$keys = $keys.") ";
 		$values = $values.");";
 		$sqlInsert = "INSERT INTO ".$tbname.$keys." VALUES ".$values;
-		$DBInstance->query($sqlInsert);
+		$this->DBInstance->query($sqlInsert);
 		
-		return $DBInstance->affected_rows;
+		return 1;//$this->DBInstance->affected_rows
 	}
 	
 	//修改一条数据
 	//id为要删除的行的ID
 	//columns为列数组，key字段为列名，value字段为列值
 	function Update($tbname, $id, $columns) {
-		assert("count($columns) > 0");//前置条件检查
 		$preCombin = " ";
 		foreach ($columns as $key => $value) { 
 			$preCombin = $key."='".$value."',";
@@ -68,9 +64,9 @@ class DBAccess {
 			$preCombin = substr($preCombin, 0, $preCombinLength-1);
 		}
 		$sqlUpdate = "UPDATE ".$tbname." SET ".$preCombin." WHERE id='".$id."' ";
-		$DBInstance->query($sqlUpdate);
+		$this->DBInstance->query($sqlUpdate);
 		
-		return $DBInstance->affected_rows;
+		return $this->DBInstance->affected_rows;
 	}
 	
 	
@@ -78,9 +74,9 @@ class DBAccess {
 	//id为要删除的行的ID
 	function Delete($tbname, $id) {
 		$sqlDelete = "DELETE FROM ".$tbname." WHERE id='".$id."' ";
-		$DBInstance->query($sqlDelete);
+		$this->DBInstance->query($sqlDelete);
 		
-		return $DBInstance->affected_rows;
+		return $this->DBInstance->affected_rows;
 	}
 	
 	//析构函数
